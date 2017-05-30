@@ -14,10 +14,16 @@ RUN rm -r /var/www/html/*
 # Add the ssh private/public keys (don't worry these are completely new and only has read access to the php repo)
 ADD credentials/* /root/.ssh/
 
-RUN git clone $GITHUB_URI /var/www/html
-
 COPY entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["entrypoint.sh"]
+
+RUN mkdir /var/git
+
+RUN git clone $GITHUB_URI /var/git
+
+RUN ls /var/git -lah
+
+RUN cd /var/git && git --work-tree=/var/www/html checkout -f -q
 
 EXPOSE 80
