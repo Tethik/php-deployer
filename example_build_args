@@ -1,0 +1,3 @@
+GITHUB_URI=git@github.com:Tethik/healthcheck.git
+BUILD_ID=$(echo $RANDOM)
+SSH_CREDENTIALS=credentials/*

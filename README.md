@@ -9,6 +9,16 @@ docker build --build-arg GITHUB_URI="git@github.com:Tethik/healthcheck.git" -t p
 docker run --env-file environment_variables -p 80:80 --dns 205.251.197.132 php-app
 ```
 
+## Build arguments
+The dockerfile takes three build arguments.
+
+**GITHUB_URI**: The url to the git repository.
+
+**SSH_CREDENTIALS**: The local relative path to the ssh credentials used for git authentication. (optional)
+
+**BUILD_ID**: An id used to control cache. Set to e.g. `$RANDOM` to avoid caching the git clone that the Dockerfile performs. (optional)
+
+
 ## Caching Problem
 Right now docker will cache the git clone and not detect changes upstream.
 
@@ -28,15 +38,12 @@ I also would not have this problem if I used a public repo.
 
 2. Proxy to external server returning a similar thing to githubs api, i.e. the latest commit hash or similar. Use "ADD" on this url. Con: adds dependency on this external service.
 
-3. Clone repository locally before dockerfile, check version. (Feels like cheating)
+3. Clone repository locally before dockerfile, check version. 
 
 ## Alternative solution
 https://docs.docker.com/engine/reference/commandline/build/#build-with-url
 
-Instead put a dockerfile at the root of the target repo. 
-```bash
-docker build github.com/creack/docker-firefox
-```
+Instead put a Dockerfile at the root of the target repo. Git clone -> docker build instead of repo being built inside the docker image.
 
 ## Existing solution
 Someone already created something that would fulfill most of the requirements here:
