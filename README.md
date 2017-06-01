@@ -1,13 +1,27 @@
 # php-deployer
 Takes arbitary php git repo and attempts to run it in docker.
 
+# Usage
+1. Clone the directory.
 ```bash
-docker build --build-arg GITHUB_URI="git@github.com:Tethik/healthcheck.git" -t php-app . 
+git clone https://github.com/Tethik/php-deployer
 ```
 
+2. Build the docker image.
 ```bash
-docker run --env-file environment_variables -p 80:80 --dns 205.251.197.132 php-app
+docker build --build-arg GITHUB_URI="git@github.com:Tethik/healthcheck.git" \
+             --build-arg SSH_CREDENTIALS=credentials/* \
+             --build-arg BUILD_ID=$RANDOM \
+             -t php-app .
 ```
+
+3. Run the image in a new container
+```bash
+docker run --env HELLO_WORLD_MSG="from Joakim" -p 80:80 --dns 205.251.197.132 php-app
+```
+
+4. Navigate to [http://localhost/web](http://localhost/web)
+
 
 ## Build arguments
 The dockerfile takes three build arguments.
@@ -18,35 +32,24 @@ The dockerfile takes three build arguments.
 
 **BUILD_ID**: An id used to control cache. Set to e.g. `$RANDOM` to avoid caching the git clone that the Dockerfile performs. (optional)
 
+## Other examples
 
-## Caching Problem
-Right now docker will cache the git clone and not detect changes upstream.
-
-Optimal behaviour would be if we could invalidate the cache when there is a new version.
-
-https://stackoverflow.com/questions/36996046/how-to-prevent-dockerfile-caching-git-clone 
-suggests the following.
+### Building a public git repo
+If we want to build a public repo we can skip the **SSH_CREDENTIALS** build argument.
+```bash
+docker build --build-arg GITHUB_URI="https://github.com/bdart/piibe.git" \
+             --build-arg BUILD_ID=$RANDOM \
+             -t php-app .
 ```
-ADD https://api.github.com/repos/$USER/$REPO/git/refs/heads/$BRANCH version.json
-```
-
-However problem is that I am using ssh authentication. This only works with https and token authentication. 
-I also would not have this problem if I used a public repo.
-
-### Potential Solutions
-1. Add timestamp / random bit to command or file in the dockerfile to invalidate cache for anything after it. Con: always clones the repo regardless if there is new content or not.
-
-2. Proxy to external server returning a similar thing to githubs api, i.e. the latest commit hash or similar. Use "ADD" on this url. Con: adds dependency on this external service.
-
-3. Clone repository locally before dockerfile, check version. 
 
 ## Alternative solution
 https://docs.docker.com/engine/reference/commandline/build/#build-with-url
 
-Instead put a Dockerfile at the root of the target repo. Git clone -> docker build instead of repo being built inside the docker image.
+Instead put a Dockerfile at the root of the target repo. Git clone -> docker build instead of repo being built inside the docker image. 
+I think this is preferable.
 
 ## Existing solution
 Someone already created something that would fulfill most of the requirements here:
 https://github.com/ngineered/nginx-php-fpm
 
-Although they don't add the git repo at build time.
+Although they don't clone the git repo at build time.

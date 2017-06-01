@@ -1,3 +1,6 @@
 #!/bin/bash
 
-docker build $(./buildargs.sh example_build_args_public) --build-arg BUILD_ID=$RANDOM -t php-app .
+docker build --build-arg GITHUB_URI="git@github.com:Tethik/healthcheck.git" \
+             --build-arg SSH_CREDENTIALS=credentials/* \
+             --build-arg BUILD_ID=$RANDOM \
+             -t php-app .
