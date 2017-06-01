@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
     nginx
 
 # Copy nginx site settings
-ADD nginx/default.conf /etc/nginx/sites-enabled/default
+ADD files/nginx/default.conf /etc/nginx/sites-enabled/default
 
 # Remove nginx default site that came install with apt-get
 RUN rm -r /var/www/html/*
@@ -13,9 +13,8 @@ RUN rm -r /var/www/html/*
 RUN mkdir /var/git
 
 # Add the ssh private/public keys if supplied
-ARG SSH_CREDENTIALS=.empty_folder/*
+ARG SSH_CREDENTIALS=files/.empty_folder/*
 ADD $SSH_CREDENTIALS /root/.ssh/
-RUN ls /root/.ssh/
 
 ARG GITHUB_URI
 RUN [ "$GITHUB_URI" != "" ]
@@ -29,6 +28,6 @@ RUN git clone $GITHUB_URI /var/git
 RUN cd /var/git && git --work-tree=/var/www/html checkout -f -q
 
 ENTRYPOINT ["entrypoint.sh"]
-COPY entrypoint.sh /usr/local/bin/
+COPY files/scripts/entrypoint.sh /usr/local/bin/
 
 EXPOSE 80

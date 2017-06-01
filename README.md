@@ -50,6 +50,6 @@ I think this is preferable.
 
 ## Existing solution
 Someone already created something that would fulfill most of the requirements here:
-https://github.com/ngineered/nginx-php-fpm
+https://hub.docker.com/r/richarvey/nginx-php-fpm/ (https://github.com/ngineered/nginx-php-fpm)
 
 Although they don't clone the git repo at build time.

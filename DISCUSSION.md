@@ -4,6 +4,7 @@ Here I'm writing down some of my thoughts and ideas for this mini project.
 ## Problems
 ### Caching 
 Right now docker will cache the git clone and not detect changes upstream unless you use a new value every run for the build argument **BUILD_ID**.
+This is why I use $RANDOM. 
 
 Optimal behaviour would be if we could invalidate the cache when there is a new version.
 
@@ -30,6 +31,7 @@ Authentication details should preferably not be stored in a git repository. For 
 Try out vault and see if I can somehow store my details there. Question is if it can store ssh details in a meaningful way in terms of security.
 
 ## Potential features to add
+Some ideas which could improve the dockerfile.
 
 ## PHP package installer
 It would perhaps be nice to automatically also install dependencies that the PHP target repo may have. I think composer is the norm here.
@@ -40,4 +42,8 @@ a token with access only to the target repo.
 
 An alternative would be to create a completely new bot account and use the token from that.
 
-Either way, it would also require some extra commands in the dockerfile.
+Either way, it would also require some extra commands in the dockerfile. Easy way is probably to copy files into the `~/.git/` directory.
+
+## Subpath
+In case the root directory of the target git repository does not contain the code we could add an option to use a subpath to copy the php files into the web root directory. 
+This could also be made automatic using some directory traversal.
