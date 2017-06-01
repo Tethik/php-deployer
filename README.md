@@ -12,6 +12,7 @@ git clone https://github.com/Tethik/php-deployer
 docker build --build-arg GITHUB_URI="git@github.com:Tethik/healthcheck.git" \
              --build-arg SSH_CREDENTIALS=credentials/* \
              --build-arg BUILD_ID=$RANDOM \
+             --build-arg GIT_SUBDIRECTORY=web/ \
              -t php-app .
 ```
 
@@ -31,6 +32,8 @@ The dockerfile takes three build arguments.
 **SSH_CREDENTIALS**: The local relative path to the ssh credentials used for git authentication. (optional)
 
 **BUILD_ID**: An id used to control cache. Set to e.g. `$RANDOM` to avoid caching the git clone that the Dockerfile performs. (optional)
+
+**GIT_SUBDIRECTORY**: Subdirectory inside the git repository containing the actual code. (optional)
 
 ## Other examples
 
