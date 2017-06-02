@@ -2,7 +2,12 @@ FROM php:7.1-fpm
 
 RUN apt-get update && apt-get install -y \
     git \
-    nginx
+    nginx 
+
+# Install composer
+RUN curl https://getcomposer.org/installer > installer
+RUN php installer --install-dir=/usr/bin --filename=composer
+
 
 # Copy nginx site settings
 ADD files/nginx/default.conf /etc/nginx/sites-enabled/default
@@ -32,7 +37,16 @@ COPY files/scripts/ /usr/local/bin/
 RUN cd /var/git && git --work-tree=/var/export checkout -f -q
 
 ARG GIT_SUBDIRECTORY
+
+# Install dependencies if composer exists.
+RUN [ -f "/var/export/$GIT_SUBDIRECTORY/composer.lock" ] && composer install --no-dev --working-dir=/var/export/$GIT_SUBDIRECTORY || exit 0
+
+# Remove composer files (dont want to leak info)
+RUN rm -f /var/export/$GIT_SUBDIRECTORY/composer.*
+
 RUN mv -T /var/export/$GIT_SUBDIRECTORY /var/www/html
+
+
 
 ENTRYPOINT ["entrypoint.sh"]
 
