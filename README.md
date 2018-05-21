@@ -1,7 +1,9 @@
 # php-deployer
 Takes arbitary php git repo and attempts to build it as a docker image.
 
-**For demo purposes I have put a fresh ssh deploy key with access to the healthcheck repo inside the `credentials` folder. Typically I would not do this for obvious security reasons.**
+**This was a code test I did as part of an interview. Maybe someone else can find it useful.**
+
+~**For demo purposes I have put a fresh ssh deploy key with access to the healthcheck repo inside the `credentials` folder. Typically I would not do this for obvious security reasons.**~
 
 # Usage
 1. Clone the directory.
